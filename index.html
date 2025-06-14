@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Whispers of the Blight</title>
+  <style>
+    body {
+      font-family: 'Georgia', serif;
+      background-color: #0b0f0c;
+      color: #d4d4c9;
+      text-align: center;
+      padding: 40px;
+      background-image: url('https://www.transparenttextures.com/patterns/dark-wood.png');
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    h1 {
+      font-size: 2.5em;
+      color: #a3c9a8;
+      margin-bottom: 10px;
+    }
+    h2 {
+      color: #9bb1a3;
+      margin-bottom: 15px;
+    }
+    p {
+      font-size: 1.2em;
+      margin: 20px 0;
+      color: #9bb1a3;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    button {
+      background-color: #3a5045;
+      color: #fff;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 10px;
+      transition: background-color 0.3s ease;
+    }
+    button:hover:not(:disabled) {
+      background-color: #4d6b5c;
+    }
+    button:disabled {
+      background-color: #2a3a33;
+      cursor: default;
+    }
+    #result, #level1Result, #mazeResult, #forestPasswordMessage, #level3Result {
+      margin-top: 20px;
+      font-size: 1.3em;
+      font-weight: bold;
+      color: #cfc;
+      min-height: 1.4em;
+    }
+    #level2, #mazeResult, #mazeRetryBtn, #questions, #goToMazeBtn, #forestPasswordSection, #level3, #level3Note, #level3PasswordPuzzle {
+      display: none;
+    }
+    img {
+      max-width: 90%;
+      height: auto;
+      margin: 20px 0;
+      border-radius: 10px;
+      box-shadow: 0 0 15px #557755cc;
+    }
+    input[type="text"], input[type="password"] {
+      width: 80%;
+      max-width: 350px;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 6px;
+      border: none;
+      font-size: 1em;
+      box-sizing: border-box;
+      color: #333;
+    }
+    #timer {
+      font-size: 1.3em;
+      color: #ffb347;
+      margin-top: 10px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    .fade {
+      transition: opacity 0.8s ease-in-out;
+      opacity: 0;
+      height: 0;
+      overflow: hidden;
+    }
+    .show {
+      opacity: 1;
+      height: auto;
+    }
+    #questions p {
+      margin-bottom: 12px;
+    }
+    .note {
+      background: #2a3a33;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 15px #335533aa;
+      font-style: italic;
+      max-width: 700px;
+      margin: 20px auto;
+      color: #b7d7a8;
+      white-space: pre-wrap;
+    }
+    .rules {
+      text-align: left;
+      background: #1b261b;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 700px;
+      margin: 20px auto;
+      color: #b7d7a8;
+      font-size: 1.1em;
+      line-height: 1.5em;
+    }
+  </style>
+  <!---poker game--->
+  <style>
+  body {
+    background-color: #0b0f0c;
+    color: #d4d4c9;
+    font-family: 'Georgia', serif;
+    text-align: center;
+    padding: 20px;
+  }
+  h2 {
+    margin-bottom: 5px;
+  }
+  .cards-container {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+  }
+  .player-section {
+    background: #152015;
+    border: 1px solid #415432;
+    border-radius: 8px;
+    padding: 10px;
+    width: 160px;
+  }
+  .player-section h3 {
+    margin: 10px 0 5px;
+  }
+  .card {
+    display: inline-block;
+    width: 50px;
+    height: 70px;
+    margin: 2px;
+    border-radius: 6px;
+    background-color: #2b4a2b;
+    color: white;
+    font-weight: bold;
+    line-height: 70px;
+    font-size: 20px;
+    user-select: none;
+  }
+  .card.red {
+    color: #e74c3c;
+  }
+  .card.back {
+    background: linear-gradient(45deg, #333, #111);
+    border: 2px solid #555;
+    color: transparent;
+    cursor: pointer;
+  }
+  #communityCards {
+    margin-bottom: 20px;
+  }
+  #revealBtn, #submitBtn {
+    padding: 10px 20px;
+    margin: 10px 5px;
+    font-size: 16px;
+    background-color: #2b4a2b;
+    border: none;
+    border-radius: 5px;
+    color: #d4d4c9;
+    cursor: pointer;
+  }
+  #submitBtn:disabled {
+    background-color: #556655;
+    cursor: not-allowed;
+  }
+  input[type="text"] {
+    font-size: 18px;
+    padding: 6px 8px;
+    width: 250px;
+    border-radius: 5px;
+    border: 1px solid #556655;
+    background-color: #182218;
+    color: #d4d4c9;
+    margin-right: 10px;
+  }
+  #message {
+    margin-top: 15px;<style>
+    font-weight: bold;
+  }
+#pokerGame {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+}
+.cards-container {
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+
+</style>
+
+</head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<body>
+  <h1>Whispers of the Blight</h1>
+
+  <!-- Level 1: Memory Trial -->
+  <div id="level1">
+    <h2>Fragments of Memory</h2>
+    <button id="startMemoryTrial" onclick="beginMemoryTrial()">Begin Memory Trial</button>
+    <div id="memoryContent" style="display:none">
+      <p>Observe the image carefully. You have 60 seconds.</p>
+      <p id="timer"></p>
+      <img id="memoryImage" src="https://i.imgur.com/1zZ58r3.jpg" alt="Memory Image" />
+
+      <div id="questions">
+        <p>1. What approx time is on the clock (HHMM)?<br><input id="q1" type="text" autocomplete="off" /></p>
+        <p>2. What piece is on the photo frame?<br><input id="q2" type="text" autocomplete="off" /></p>
+        <p>3. What is the colour of the balloon?<br><input id="q3" type="text" autocomplete="off" /></p>
+        <p>4. Number of males?<br><input id="q4" type="text" autocomplete="off" /></p>
+        <p>5. Number of females?<br><input id="q5" type="text" autocomplete="off" /></p>
+        <button id="submitAnswersBtn" onclick="checkLevel1Answers()">Submit Answers</button>
+      </div>
+      <div id="level1Result"></div>
+      <button id="retryLevel1" onclick="retryLevel1()" style="display:none">Retry</button>
+      <button id="goToMazeBtn" onclick="goToMaze()" style="display:none">Go to The Maze</button>
+    </div>
+  </div>
+  <!-- Level 2: The Maze -->
+  <div id="level2">
+    <h2>The Maze</h2>
+    <p id="narration">You stand before two gates. One whispers truth. One lies in silence. Choose: Gate A or B?</p>
+    <div id="choices">
+      <button onclick="choose('A')">Enter Gate A</button>
+      <button onclick="choose('B')">Enter Gate B</button>
+    </div>
+    <div id="mazeResult"></div>
+    <div id="forestPasswordSection">
+      <p>To enter the forest, whisper the ancient numbers:</p>
+      <input id="forestPassword" type="text" placeholder="Enter Password" autocomplete="off" />
+      <button onclick="checkForestPassword()">Enter Forest</button>
+      <p id="forestPasswordMessage"></p>
+    </div>
+    <button id="mazeRetryBtn" onclick="restartMaze()" style="display:none">Try Again</button>
+  </div>
+
+  <!-- Level 3: The Forgotten Forest -->
+  <div id="level3" style="display:none;">
+    <h2>The Forgotten Forest</h2>
+
+    <!-- Story Note -->
+    <div id="forestNote">
+      <p>You step into the shadows of the Forgotten Forest...</p>
+      <p>Within the gloom, a strange house emerges. Abandoned. Still.</p>
+      <p>Inside, an old computer hums faintly. Dusty. Alive.</p>
+      <p>On the screen glows an ancient program:</p>
+      <p><strong>Whispers of the Blight</strong></p>
+      <p>It demands a new account. A username. A password.<br>The rite begins...</p>
+      <button onclick="document.getElementById('urlPuzzleSection').style.display='block'">Continue</button>
+
+    </div>
+    <body>
+      <!-- URL Puzzle Section -->
+<div id="urlPuzzleSection" style="display:none; text-align: center; padding: 40px; font-family: 'Georgia', serif; color: #d4d4c9;">
+  <h2 style="color: #9ef5c2;">A Strange Note</h2>
+  <p style="font-style: italic; color: #aaa;">
+    “The trees whispered secrets as we stumbled upon an old cabin. A dusty note lay under a rock...”
+  </p>
+  <p>
+    *“To uncover what was lost in the blight, open the digital gate.”*
+  </p>
+  <input type="text" id="urlInput" placeholder="Enter the URL..." style="padding: 10px; margin-top: 20px; width: 300px; max-width: 90%; border-radius: 5px; border: none;" />
+  <br>
+  <button onclick="checkURL()" style="margin-top: 20px; background-color: #2f4f4f; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Continue</button>
+  <p id="urlError" style="color: red; display: none;">404 Not Found</p>
+</div>
+
+<script>
+  function checkURL() {
+    const correctURL = "www.whispersoftheblight09.com";
+    const input = document.getElementById("urlInput").value.trim().toLowerCase();
+    if (input === correctURL) {
+      document.getElementById("urlPuzzleSection").style.display = "none";
+      // 👇 Show the next puzzle section here
+      document.getElementById("passwordChallenge").style.display = "block";
+    } else {
+      document.getElementById("urlError").style.display = "block";
+    }
+  }
+</script>
+
+    </body>
+
+    <!-- Password Challenge -->
+    <div id="passwordChallenge" style="display:none;">
+      <p>Create your password to unlock the forest's secret...</p>
+      <input id="username" type="text" placeholder="Enter Username" /><br>
+      <input id="password" type="text" placeholder="Enter Password" /><br>
+      <p id="ruleMessage" style="color:#f99;"></p>
+      <button onclick="checkAllRules()">Submit Password</button>
+      <div id="passwordContinue" style="margin-top:20px; display:none;">
+        <p style="color:#afa;"><strong>Password accepted. You may proceed.</strong></p>
+        <button onclick="goToNextPuzzle()">Continue</button>
+      </div>
+    </div>
+
+    <!-- (We no longer show this—pokerGame will appear instead) -->
+    <div id="nextForestPuzzle" style="display:none;">
+      <p>The forest breathes as your access is granted...</p>
+      <p><em>(Another puzzle awakens...)</em></p>
+    </div>
+  </div>
+
+  <!-- Poker Game (hidden until password is correct) -->
+  <div id="pokerGame" style="display:none;">
+    <h2>The mysterious poker</h2>
+<p>Around the worn wooden table, five shadowy figures sit in tense silence, each clutching their cards tightly. The dealer places five faded, weathered cards face-up in the center — the communal stakes of this cryptic game. Every glance hides secrets, every move weighs fate. To unravel the forest’s next whisper, you must decipher their silent contest of hands.
+
+</p>
+
+<div id="communityCards" class="cards-container">
+  <div class="player-section">
+    <h3>Community Cards</h3>
+    <!-- Cards will appear here -->
+  </div>
+</div>
+
+<div id="playersCards" class="cards-container">
+  <!-- Players cards sections -->
+</div>
+<div id="poker-table">
+</div>
+<button id="revealBtn">Reveal All Cards</button>
+
+<div style="margin-top: 20px;">
+  <label for="passwordInput">Enter the descending order of players by hand strength (e.g. 1 2 3 4 5):</label><br />
+  <input type="text" id="passwordInput" placeholder="e.g. 1 2 3 4 5" />
+  <button id="submitBtn" disabled>Submit</button>
+</div>
+
+<div id="message"></div>
+  </div>
+  <script>
+    // ─── Level 3 Password Rules & Handlers ─────────────────────────────────────
+    const rules = [
+      {
+        text: "Password must be exactly 13 characters.",
+        validate: pwd => pwd.length === 13
+      },
+      {
+        text: "Allowed characters: lowercase letters (a-z) and digits (0–9) only.",
+        validate: pwd => /^[a-z0-9]+$/.test(pwd)
+      },
+      {
+        text: "Password must include a full month name (e.g., january, february...).",
+        validate: pwd => /(january|february|march|april|may|june|july|august|september|october|november|december)/.test(pwd)
+      },
+      {
+        text: "Password must include first 3 letters of developing team (crw).",
+        validate: pwd => pwd.includes("crw")
+      },
+      {
+        text: "Password must include the name of an IPL winning team (e.g., rcb, mi, csk).",
+        validate: pwd => /(rcb|mi|csk|kkr|srh|rr)/.test(pwd)
+      },
+      {
+        text: "No ‘e’, ‘i’, or ‘o’ allowed in the password.",
+        validate: pwd => !/[eio]/.test(pwd)
+      },
+      {
+        text: "Sum of all digits must be exactly 9.",
+        validate: pwd => {
+          const digits = pwd.match(/\d/g) || [];
+          return digits.map(Number).reduce((a, b) => a + b, 0) === 9;
+        }
+      },
+      {
+        text: "No repeated consecutive letters.",
+        validate: pwd => !/(.)\1/.test(pwd)
+      },
+      {
+        text: "Must start with a letter.",
+        validate: pwd => /^[a-z]/.test(pwd)
+      },
+      {
+        text: "Must end with a digit.",
+        validate: pwd => /\d$/.test(pwd)
+      },
+      {
+        text: "4th, 8th, and 12th characters must be digits.",
+        validate: pwd => [3, 7, 11].every(i => /\d/.test(pwd[i]))
+      },
+      {
+        text: "Password must have exactly 4 digits.",
+        validate: pwd => (pwd.match(/\d/g) || []).length === 4
+      }
+    ];
+
+    function showPasswordChallenge() {
+      document.getElementById('forestNote').style.display = 'none';
+      document.getElementById('passwordChallenge').style.display = 'block';
+      document.getElementById('ruleMessage').textContent = '';
+      document.getElementById('passwordContinue').style.display = 'none';
+    }
+
+    function checkAllRules() {
+      const pwd = document.getElementById('password').value.trim();
+
+      for (let i = 0; i < rules.length; i++) {
+        if (!rules[i].validate(pwd)) {
+          document.getElementById('ruleMessage').style.color = '#f99';
+          document.getElementById('ruleMessage').textContent = `❌ Rule ${i + 1} failed: ${rules[i].text}`;
+          document.getElementById('passwordContinue').style.display = 'none';
+          return;
+        }
+      }
+
+      // All rules passed
+      document.getElementById('ruleMessage').style.color = '#afa';
+      document.getElementById('ruleMessage').textContent = '✅ Password accepted.';
+      document.getElementById('passwordContinue').style.display = 'block';
+    }
+
+    // When password is accepted, hide Level 3 and show Poker
+    function goToNextPuzzle() {
+      document.getElementById('level3').style.display = 'none';
+      document.getElementById('pokerGame').style.display = 'block';
+    }
+  </script>
+
+  <script>
+    // ─── Level 1 & Level 2 Logic ────────────────────────────────────────────────
+    // Correct answers for Level 1 (memory quiz)
+    const correctAnswers = ['1010', 'knight', 'yellow', '6', '7'];
+    let hasSeenImage = false;
+    let timerInterval;
+
+    function setInputsDisabled(state) {
+      for (let i = 1; i <= 5; i++) {
+        document.getElementById('q' + i).disabled = state;
+      }
+      document.getElementById('submitAnswersBtn').disabled = state;
+    }
+
+    function beginMemoryTrial() {
+      if (!hasSeenImage) {
+        hasSeenImage = true;
+        document.getElementById('startMemoryTrial').style.display = 'none';
+        document.getElementById('memoryContent').style.display = 'block';
+        document.getElementById('questions').style.display = 'none';
+        setInputsDisabled(true);
+        clearInputs();
+        document.getElementById('level1Result').textContent = '';
+        document.getElementById('retryLevel1').style.display = 'none';
+        document.getElementById('goToMazeBtn').style.display = 'none';
+
+        let timeLeft = 01;
+        const timer = document.getElementById('timer');
+        timer.textContent = `Time left: ${timeLeft}s`;
+
+        timerInterval = setInterval(() => {
+          timeLeft--;
+          timer.textContent = `Time left: ${timeLeft}s`;
+          if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            document.getElementById('memoryImage').style.display = 'none';
+            document.getElementById('questions').style.display = 'block';
+            setInputsDisabled(false);
+            timer.textContent = '';
+          }
+        }, 1000);
+      }
+    }
+
+    function clearInputs() {
+      for (let i = 1; i <= 5; i++) {
+        document.getElementById('q' + i).value = '';
+      }
+    }
+
+    function checkLevel1Answers() {
+      const userAnswers = [];
+      for (let i = 1; i <= 5; i++) {
+        userAnswers.push(document.getElementById('q' + i).value.trim().toLowerCase());
+      }
+
+      const result = document.getElementById('level1Result');
+
+      if (userAnswers.some(ans => ans === '')) {
+        result.style.color = '#f55';
+        result.innerHTML = '<strong>Please answer all questions before submitting.</strong>';
+        return;
+      }
+
+      const isCorrect = userAnswers.every((ans, idx) => ans === correctAnswers[idx]);
+
+      if (isCorrect) {
+        result.style.color = '#afa';
+        result.innerHTML = '<strong>You remembered well. The forest allows you to pass...</strong>';
+        document.getElementById('retryLevel1').style.display = 'none';
+        document.getElementById('goToMazeBtn').style.display = 'inline-block';
+        setInputsDisabled(true);
+      } else {
+        result.style.color = '#f55';
+        result.innerHTML = '<strong>The memory fades. The forest turns you back.</strong>';
+        document.getElementById('retryLevel1').style.display = 'inline-block';
+      }
+    }
+
+    function retryLevel1() {
+      hasSeenImage = false;
+      document.getElementById('startMemoryTrial').style.display = 'block';
+      document.getElementById('memoryContent').style.display = 'none';
+      document.getElementById('questions').style.display = 'none';
+      document.getElementById('memoryImage').style.display = 'block';
+      document.getElementById('level1Result').textContent = '';
+      document.getElementById('goToMazeBtn').style.display = 'none';
+      clearInterval(timerInterval);
+      document.getElementById('timer').textContent = '';
+    }
+
+    function goToMaze() {
+      document.getElementById('level1').style.display = 'none';
+      document.getElementById('level2').style.display = 'block';
+      resetMaze();
+    }
+
+    // Maze logic
+    const narration = document.getElementById('narration');
+    const mazeResult = document.getElementById('mazeResult');
+    const mazeRetryBtn = document.getElementById('mazeRetryBtn');
+    const forestPasswordSection = document.getElementById('forestPasswordSection');
+    let path = [];
+
+    const steps = [
+      "You walk deeper... Two paths fork in the mist.",
+      "A shadow watches from the trees. Choose again.",
+      "You hear chanting beyond the mossy stone. Choose wisely.",
+      "The forest thickens. Which gate now opens?",
+      "Almost there. The ground trembles faintly.",
+      "One final step. One final gate."
+    ];
+
+    function choose(gate) {
+      path.push(gate);
+      if (path.length < 6) {
+        narration.textContent = steps[path.length - 1];
+      } else {
+        document.getElementById('choices').style.display = 'none';
+        checkPath();
+      }
+    }
+
+    function checkPath() {
+      const pathStr = path.join('');
+      mazeResult.style.display = 'block';
+
+      if (pathStr === 'ABAABB') {
+        mazeResult.innerHTML = `
+          <p>You found an exit through the twisted maze...</p>
+          <em>"I am a code, but not for locks,<br>
+          I come in pairs, no keys or clocks.<br>
+          I'm short and proud, just two in line,<br>
+          I mark the land that's yours and mine."</em>
+          <br><button onclick="showForestPassword()">Go to The Forest</button>
+        `;
+      } else if (pathStr === 'BABBAB') {
+        mazeResult.innerHTML = `
+          <p>You slip through the ivy-covered gate...</p>
+          <em>There was a map here but the operator brought it back to himself. Ask him for that map... but don't tell anyone about that.</em>
+        `;
+      } else {
+        mazeResult.innerHTML = `
+          <p>The path ends. A wall of thorns blocks your way. The forest rejects your steps.</p>
+        `;
+      }
+      mazeRetryBtn.style.display = 'inline-block';
+    }
+
+    function restartMaze() {
+      resetMaze();
+    }
+
+    function resetMaze() {
+      path = [];
+      narration.textContent = "You stand before two gates. One whispers truth. One lies in silence. Choose: Gate A or B?";
+      mazeResult.innerHTML = "";
+      mazeResult.style.display = 'none';
+      mazeRetryBtn.style.display = 'none';
+      forestPasswordSection.style.display = 'none';
+      document.getElementById('forestPassword').value = '';
+      document.getElementById('forestPasswordMessage').textContent = '';
+      document.getElementById('choices').style.display = 'block';
+    }
+
+    function showForestPassword() {
+      forestPasswordSection.style.display = 'block';
+      mazeResult.innerHTML = '';
+    }
+
+    function checkForestPassword() {
+      const input = document.getElementById('forestPassword').value.trim();
+      const message = document.getElementById('forestPasswordMessage');
+      if (input === '1211100408') {
+        document.getElementById('level2').style.display = 'none';
+        document.getElementById('level3').style.display = 'block';
+      } else {
+        message.style.color = '#f55';
+        message.textContent = 'The forest does not accept false words...';
+      }
+    }
+  </script>
+
+  <script>
+  // Cards data
+  const communityCardsData = [
+    {rank: '2', suit: '♠', color: 'black'},
+    {rank: '4', suit: '♦', color: 'red'},
+    {rank: 'Q', suit: '♠', color: 'black'},
+    {rank: 'J', suit: '♣', color: 'black'},
+    {rank: 'K', suit: '♥', color: 'red'},
+  ];
+
+  const playersData = [
+    {id: 1, holeCards: [{rank: 'Q', suit: '♦', color: 'red'}, {rank: 'J', suit: '♦', color: 'red'}]},
+    {id: 2, holeCards: [{rank: '5', suit: '♠', color: 'black'}, {rank: '10', suit: '♦', color: 'red'}]},
+    {id: 3, holeCards: [{rank: '3', suit: '♥', color: 'red'}, {rank: 'K', suit: '♦', color: 'red'}]},
+    {id: 4, holeCards: [{rank: 'J', suit: '♠', color: 'black'}, {rank: 'K', suit: '♠', color: 'black'}]},
+    {id: 5, holeCards: [{rank: '2', suit: '♥', color: 'red'}, {rank: '2', suit: '♣', color: 'black'}]},
+  ];
+
+  const correctPassword = '5 4 1 3 2';
+
+  const communityCardsContainer = document.querySelector('#communityCards .player-section');
+  const playersCardsContainer = document.getElementById('playersCards');
+  const revealBtn = document.getElementById('revealBtn');
+  const submitBtn = document.getElementById('submitBtn');
+  const passwordInput = document.getElementById('passwordInput');
+  const message = document.getElementById('message');
+
+  // Utility to create a card element
+  function createCardElement(card, faceDown = true) {
+    const cardDiv = document.createElement('div');
+    cardDiv.classList.add('card');
+    if (faceDown) {
+      cardDiv.classList.add('back');
+      cardDiv.textContent = '🂠'; // card back unicode symbol
+    } else {
+      if (card.color === 'red') cardDiv.classList.add('red');
+      cardDiv.textContent = card.rank + card.suit;
+    }
+    return cardDiv;
+  }
+
+  // Initialize: render face down cards
+  function renderCardsFaceDown() {
+    // Community cards
+    communityCardsContainer.innerHTML = '<h3>Community Cards</h3>';
+    communityCardsData.forEach(() => {
+      communityCardsContainer.appendChild(createCardElement(null, true));
+    });
+
+    // Player cards
+    playersCardsContainer.innerHTML = '';
+    playersData.forEach(player => {
+      const playerDiv = document.createElement('div');
+      playerDiv.classList.add('player-section');
+      playerDiv.innerHTML = `<h3>Player ${player.id}</h3>`;
+      player.holeCards.forEach(() => {
+        playerDiv.appendChild(createCardElement(null, true));
+      });
+      playersCardsContainer.appendChild(playerDiv);
+    });
+
+    submitBtn.disabled = true;
+    message.textContent = '';
+  }
+
+  // Reveal all cards face up
+  function revealCards() {
+    // Community cards
+    communityCardsContainer.innerHTML = '<h3>Community Cards</h3>';
+    communityCardsData.forEach(card => {
+      communityCardsContainer.appendChild(createCardElement(card, false));
+    });
+
+    // Player cards
+    playersCardsContainer.innerHTML = '';
+    playersData.forEach(player => {
+      const playerDiv = document.createElement('div');
+      playerDiv.classList.add('player-section');
+      playerDiv.innerHTML = `<h3>Player ${player.id}</h3>`;
+      player.holeCards.forEach(card => {
+        playerDiv.appendChild(createCardElement(card, false));
+      });
+      playersCardsContainer.appendChild(playerDiv);
+    });
+
+    submitBtn.disabled = false;
+    message.textContent = 'Cards revealed! Enter the descending order of players by hand strength.';
+  }
+
+  // Check password
+ function checkPassword() {
+  const input = passwordInput.value.trim().replace(/\s+/g, ' ');
+  if (input === correctPassword) {
+    message.style.color = '#afa';
+    message.innerHTML = '✅ Correct! <br>Dealer reveals a note.';
+
+    // Lock inputs
+    submitBtn.disabled = true;
+    revealBtn.disabled = true;
+    passwordInput.disabled = true;
+
+    // Add "Read it" button
+    const readNoteBtn = document.createElement('button');
+    readNoteBtn.textContent = '📜 Read it';
+    readNoteBtn.style.marginTop = '10px';
+    readNoteBtn.style.padding = '10px 20px';
+    readNoteBtn.style.fontSize = '16px';
+    readNoteBtn.style.backgroundColor = '#3c3f36';
+    readNoteBtn.style.color = '#d4d4c9';
+    readNoteBtn.style.border = '1px solid #4c5a40';
+    readNoteBtn.style.borderRadius = '5px';
+    readNoteBtn.onclick = showDungeonNote;
+    message.appendChild(document.createElement('br'));
+    message.appendChild(readNoteBtn);
+  } else {
+    message.style.color = '#f55';
+    message.textContent = '❌ Incorrect order. Try again.';
+  }
+}
+function showDungeonNote() {
+  message.innerHTML = `
+    <p><strong>The note reads:</strong><br />
+    "Beyond the cards and false smiles lies a path few dare follow. The dealer guards more than games..."</p>
+    <p>You lift your gaze. The poker table cracks open, revealing a stone staircase spiraling downward, lit by flickering green torches. A chilling wind drifts upward, carrying whispers in a language long forgotten.</p>
+    <button id="goToDungeonBtn" style="
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 15px;
+      background-color: #2a2e24;
+      color: #d4d4c9;
+      border: 1px solid #4c5a40;
+      border-radius: 5px;
+      cursor: pointer;
+    ">🗝️ Go to Dungeon</button>
+  `;
+
+  document.getElementById('goToDungeonBtn').onclick = () => {
+    window.location.href = 'dungeon.html'; // You can change this to the real dungeon level URL
+  };
+}
+
+
+  revealBtn.addEventListener('click', revealCards);
+  submitBtn.addEventListener('click', checkPassword);
+  passwordInput.addEventListener('input', () => {
+    submitBtn.disabled = passwordInput.value.trim().length === 0;
+    message.textContent = '';
+  });
+
+  // Initial render
+  renderCardsFaceDown();
+</script>
+
+</body>
+</html>
